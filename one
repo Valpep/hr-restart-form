@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Re:Start Анкета</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+        const { useState } = React;
+
+        export default function HRRestartForm() {
+          const [formData, setFormData] = useState({
+            name: '', age: '', height: '', weight: '', chest: '', chestUnder: '',
+            waist: '', hips: '', arm: '', pregnant: '', surgery: '', surgeryDesc: '',
+            appendectomy: '', appendectomyAge: '', gallbladder: '', digestion: [],
+            skinCondition: '', diagnoses: [], hasAllergy: '', foodAllergy: '', 
+            hasDiagnoses: '', otherDiagnoses: '', morningEnergy: '5', dayEnergy: '5', 
+            satisfaction: '5', stress: '5', sleepHours: '', nightAwakenings: '', 
+            activity: '', foodHabits: [], dietType: '', trackers: '', 
+            priorities: {'Вага': '', 'Сон': '', 'Зменшення набряків': '', 
+                        'Підвищення рівня енергії': '', 'Покращення стану шкіри': '', 
+                        'Покращення стану травлення': '', 'Психологічне розвантаження': ''},
+            confirmed: false, understandMedical: false, agreeData: false,
+            date: new Date().toISOString().split('T')[0],
+          });
+
+          const [loading, setLoading] = useState(false);
+          const [error, setError] = useState('');
+          const [success, setSuccess] = useState('');
+
+          const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({ ...prev, [name]: value }));
+          };
+
+          const handleCheckboxChange = (name, value) => {
+            setFormData(prev => {
+              const current = Array.isArray(prev[name]) ? prev[name] : [];
+              if (current.includes(value)) {
+                return { ...prev, [name]: current.filter(item => item !== value) };
+              } else {
+                return { ...prev, [name]: [...current, value] };
+              }
+            });
+          };
+
+          const handleSubmit = async () => {
+            setLoading(true);
+            setError('');
+            setSuccess('');
+
+            if (!formData.confirmed || !formData.understandMedical || !formData.agreeData) {
+              setError('Будь ласка, підтвердіть усі умови');
+              setLoading(false);
+              return;
+            }
+
+            if (!formData.name) {
+              setError('Будь ласка, введіть ПІБ');
+              setLoading(false);
+              return;
+            }
+
+            try {
+              const webhookUrl = 'https://script.google.com/macros/s/AKfycbwwfsARcdrfVuOC5ZjOGegv9APJmlUqaulKGeG0_6yIMSfaJBosiAvGX9sFtaIe_rY2/exec';
+              
+              const dataToSend = {
+                timestamp: new Date().toISOString(),
+                name: formData.name, age: formData.age, height: formData.height,
+                weight: formData.weight, chest: formData.chest, chestUnder: formData.chestUnder,
+                waist: formData.waist, hips: formData.hips, arm: formData.arm,
+                pregnant: formData.pregnant, surgery: formData.surgery, surgeryDesc: formData.surgeryDesc,
+                appendectomy: formData.appendectomy, appendectomyAge: formData.appendectomyAge,
+                gallbladder: formData.gallbladder, digestion: formData.digestion.join('; '),
+                skinCondition: formData.skinCondition, diagnoses: formData.diagnoses.join('; '),
+                hasAllergy: formData.hasAllergy, foodAllergy: formData.foodAllergy,
+                hasDiagnoses: formData.hasDiagnoses, otherDiagnoses: formData.otherDiagnoses,
+                morningEnergy: formData.morningEnergy, dayEnergy: formData.dayEnergy,
+                satisfaction: formData.satisfaction, stress: formData.stress,
+                sleepHours: formData.sleepHours, nightAwakenings: formData.nightAwakenings,
+                activity: formData.activity, foodHabits: formData.foodHabits.join('; '),
+                dietType: formData.dietType, trackers: formData.trackers,
+                priorities: Object.entries(formData.priorities).map(([key, val]) => `${key}: ${val}`).join('; '),
+              };
+
+              const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend),
+              });
+
+              if (response.ok) {
+                setSuccess('✓ Дякуємо за участь у програмі HR Re:Start!\\n\\nВаша анкета успішно збережена.');
+                setTimeout(() => {
+                  setFormData({
+                    name: '', age: '', height: '', weight: '', chest: '', chestUnder: '',
+                    waist: '', hips: '', arm: '', pregnant: '', surgery: '', surgeryDesc: '',
+                    appendectomy: '', appendectomyAge: '', gallbladder: '', digestion: [],
+                    skinCondition: '', diagnoses: [], hasAllergy: '', foodAllergy: '', 
+                    hasDiagnoses: '', otherDiagnoses: '', morningEnergy: '5', dayEnergy: '5', 
+                    satisfaction: '5', stress: '5', sleepHours: '', nightAwakenings: '', 
+                    activity: '', foodHabits: [], dietType: '', trackers: '', 
+                    priorities: {'Вага': '', 'Сон': '', 'Зменшення набряків': '', 
+                                'Підвищення рівня енергії': '', 'Покращення стану шкіри': '', 
+                                'Покращення стану травлення': '', 'Психологічне розвантаження': ''},
+                    confirmed: false, understandMedical: false, agreeData: false
+                  });
+                  setSuccess('');
+                }, 4000);
+              } else {
+                setError('Помилка при збереженні.');
+              }
+            } catch (err) {
+              setError('Помилка при відправці.');
+            }
+            setLoading(false);
+          };
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+              <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">Анкета HR Re:Start</h1>
+                <p className="text-gray-600 mb-6">Заповнення займе близько 7 хвилин</p>
+
+                {error && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-800">{error}</p>
+                  </div>
+                )}
+
+                {success && (
+                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-green-800 whitespace-pre-wrap">{success}</p>
+                  </div>
+                )}
+
+                <div className="space-y-8">
+                  {/* І. Загальна інформація */}
+                  <section className="border-b pb-6">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">І. Загальна інформація</h2>
+                    
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">ПІБ</label>
+                      <input type="text" name="name" value={formData.name} onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Вік</label>
+                        <input type="number" name="age" value={formData.age} onChange={handleInputChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Зріст (см)</label>
+                        <input type="number" name="height" value={formData.height} onChange={handleInputChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Вага (кг)</label>
+                        <input type="number" name="weight" value={formData.weight} onChange={handleInputChange}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
+                      </div>
+                    </div>
+
+                    <p className="text-sm font-medium text-gray-700 mb-3">Заміри (см)</p>
+                    <div className="grid grid-cols-1 gap-3 mb-4">
+                      {[
+                        { name: 'chest', label: 'Обхват грудей' },
+                        { name: 'chestUnder', label: 'Обхват під грудьми' },
+                        { name: 'waist', label: 'Обхват талії' },
+                        { name: 'hips', label: 'Обхват стегон' },
+                        { name: 'arm', label: 'Обхват руки' }
+                      ].map(field => (
+                        <input key={field.name} type="number" name={field.name} placeholder={field.label}
+                          value={formData[field.name]} onChange={handleInputChange}
+                          className="px-4 py-2 border border-gray-300 rounded-lg outline-none" />
+                      ))}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Чи є ви вагітною або годуєте грудьми?</label>
+                      <div className="space-y-2">
+                        {['Так', 'Ні', 'Не стосується'].map(option => (
+                          <label key={option} className="flex items-center cursor-pointer">
+                            <input type="radio" name="pregnant" value={option} checked={formData.pregnant === option}
+                              onChange={handleInputChange} className="mr-2" />
+                            <span className="text-sm">{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* V. Підтвердження */}
+                  <section>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">V. Підтвердження та згода</h2>
+                    <div className="space-y-3 mb-6">
+                      <label className="flex items-start cursor-pointer">
+                        <input type="checkbox" checked={formData.confirmed} 
+                          onChange={(e) => setFormData({...formData, confirmed: e.target.checked})}
+                          className="mr-3 mt-1" />
+                        <span className="text-sm">Надав(ла) достовірну інформацію</span>
+                      </label>
+                      <label className="flex items-start cursor-pointer">
+                        <input type="checkbox" checked={formData.understandMedical} 
+                          onChange={(e) => setFormData({...formData, understandMedical: e.target.checked})}
+                          className="mr-3 mt-1" />
+                        <span className="text-sm">Розумію, що програма не замінює медичне лікування</span>
+                      </label>
+                      <label className="flex items-start cursor-pointer">
+                        <input type="checkbox" checked={formData.agreeData} 
+                          onChange={(e) => setFormData({...formData, agreeData: e.target.checked})}
+                          className="mr-3 mt-1" />
+                        <span className="text-sm">Погоджуюсь на використання знеособлених даних</span>
+                      </label>
+                    </div>
+
+                    <button onClick={handleSubmit} disabled={loading}
+                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors cursor-pointer">
+                      {loading ? 'Відправлення...' : 'Відправити анкету'}
+                    </button>
+                  </section>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<HRRestartForm />);
+    </script>
+</body>
+</html>
