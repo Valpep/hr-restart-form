@@ -4,236 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Re:Start Анкета</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 500; color: #333; margin-bottom: 8px; font-size: 14px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 10px; }
+        input[type="checkbox"], input[type="radio"] { margin-right: 8px; cursor: pointer; }
+        .radio-group label, .checkbox-group label { display: flex; align-items: center; cursor: pointer; margin: 0; }
+        .section { border-bottom: 1px solid #eee; padding-bottom: 30px; margin-bottom: 30px; }
+        .section:last-child { border-bottom: none; }
+        h2 { color: #667eea; font-size: 18px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        button { background: #667eea; color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; transition: all 0.3s; }
+        button:hover { background: #764ba2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .success { background: #d4edda; border: 1px solid #28a745; color: #155724; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none; }
+        .success.show { display: block; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none; }
+        .error.show { display: block; }
+        .spinner { display: none; }
+        .spinner.show { display: inline-block; }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script type="text/babel">
-        const { useState } = React;
+    <div class="container">
+        <h1>Анкета HR Re:Start</h1>
+        <p class="subtitle">Заповнення займе близько 7 хвилин</p>
+        
+        <div id="success" class="success"></div>
+        <div id="error" class="error"></div>
 
-        export default function HRRestartForm() {
-          const [formData, setFormData] = useState({
-            name: '', age: '', height: '', weight: '', chest: '', chestUnder: '',
-            waist: '', hips: '', arm: '', pregnant: '', surgery: '', surgeryDesc: '',
-            appendectomy: '', appendectomyAge: '', gallbladder: '', digestion: [],
-            skinCondition: '', diagnoses: [], hasAllergy: '', foodAllergy: '', 
-            hasDiagnoses: '', otherDiagnoses: '', morningEnergy: '5', dayEnergy: '5', 
-            satisfaction: '5', stress: '5', sleepHours: '', nightAwakenings: '', 
-            activity: '', foodHabits: [], dietType: '', trackers: '', 
-            priorities: {'Вага': '', 'Сон': '', 'Зменшення набряків': '', 
-                        'Підвищення рівня енергії': '', 'Покращення стану шкіри': '', 
-                        'Покращення стану травлення': '', 'Психологічне розвантаження': ''},
-            confirmed: false, understandMedical: false, agreeData: false,
-            date: new Date().toISOString().split('T')[0],
-          });
+        <form id="form">
+            <!-- І. Загальна інформація -->
+            <div class="section">
+                <h2>І. Загальна інформація</h2>
+                
+                <div class="form-group">
+                    <label>ПІБ *</label>
+                    <input type="text" name="name" required>
+                </div>
 
-          const [loading, setLoading] = useState(false);
-          const [error, setError] = useState('');
-          const [success, setSuccess] = useState('');
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Вік</label>
+                        <input type="number" name="age">
+                    </div>
+                    <div class="form-group">
+                        <label>Зріст (см)</label>
+                        <input type="number" name="height">
+                    </div>
+                    <div class="form-group">
+                        <label>Вага (кг)</label>
+                        <input type="number" name="weight">
+                    </div>
+                </div>
 
-          const handleInputChange = (e) => {
-            const { name, value } = e.target;
-            setFormData(prev => ({ ...prev, [name]: value }));
-          };
+                <div class="form-group">
+                    <label>Обхват грудей (см)</label>
+                    <input type="number" name="chest">
+                </div>
+                <div class="form-group">
+                    <label>Обхват під грудьми (см)</label>
+                    <input type="number" name="chestUnder">
+                </div>
+                <div class="form-group">
+                    <label>Обхват талії (см)</label>
+                    <input type="number" name="waist">
+                </div>
+                <div class="form-group">
+                    <label>Обхват стегон (см)</label>
+                    <input type="number" name="hips">
+                </div>
+                <div class="form-group">
+                    <label>Обхват руки (см)</label>
+                    <input type="number" name="arm">
+                </div>
 
-          const handleCheckboxChange = (name, value) => {
-            setFormData(prev => {
-              const current = Array.isArray(prev[name]) ? prev[name] : [];
-              if (current.includes(value)) {
-                return { ...prev, [name]: current.filter(item => item !== value) };
-              } else {
-                return { ...prev, [name]: [...current, value] };
-              }
-            });
-          };
+                <div class="form-group">
+                    <label>Чи є ви вагітною або годуєте грудьми?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="pregnant" value="Так"> Так</label>
+                        <label><input type="radio" name="pregnant" value="Ні"> Ні</label>
+                        <label><input type="radio" name="pregnant" value="Не стосується"> Не стосується</label>
+                    </div>
+                </div>
+            </div>
 
-          const handleSubmit = async () => {
-            setLoading(true);
-            setError('');
-            setSuccess('');
+            <!-- ІІ. Стан здоров'я -->
+            <div class="section">
+                <h2>ІІ. Стан здоров'я та анамнез</h2>
+                
+                <div class="form-group">
+                    <label>Хірургічні втручання за 6 місяців?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="surgery" value="Так"> Так</label>
+                        <label><input type="radio" name="surgery" value="Ні"> Ні</label>
+                    </div>
+                </div>
+                <div id="surgeryDescDiv" class="form-group" style="display:none;">
+                    <label>Опис та дата:</label>
+                    <input type="text" name="surgeryDesc">
+                </div>
 
-            if (!formData.confirmed || !formData.understandMedical || !formData.agreeData) {
-              setError('Будь ласка, підтвердіть усі умови');
-              setLoading(false);
-              return;
-            }
+                <div class="form-group">
+                    <label>Апендектомія?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="appendectomy" value="Так"> Так</label>
+                        <label><input type="radio" name="appendectomy" value="Ні"> Ні</label>
+                    </div>
+                </div>
+                <div id="appendectomyAgeDiv" class="form-group" style="display:none;">
+                    <label>У якому віці?</label>
+                    <input type="number" name="appendectomyAge">
+                </div>
 
-            if (!formData.name) {
-              setError('Будь ласка, введіть ПІБ');
-              setLoading(false);
-              return;
-            }
+                <div class="form-group">
+                    <label>Харчова алергія/непереносимість?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hasAllergy" value="Так"> Так</label>
+                        <label><input type="radio" name="hasAllergy" value="Ні"> Ні</label>
+                    </div>
+                </div>
+                <div id="foodAllergyDiv" class="form-group" style="display:none;">
+                    <label>Опишіть:</label>
+                    <input type="text" name="foodAllergy">
+                </div>
+            </div>
+
+            <!-- V. Підтвердження -->
+            <div class="section">
+                <h2>V. Підтвердження та згода</h2>
+                
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="confirmed" required> Надав(ла) достовірну інформацію</label>
+                    <label><input type="checkbox" name="understandMedical" required> Розумію, що програма не замінює медичне лікування</label>
+                    <label><input type="checkbox" name="agreeData" required> Погоджуюсь на використання знеособлених даних</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Відправити анкету</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('form');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMsg = document.getElementById('success');
+        const errorMsg = document.getElementById('error');
+
+        // Show/hide conditional fields
+        document.querySelector('input[name="surgery"]').addEventListener('change', (e) => {
+            document.getElementById('surgeryDescDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
+        });
+
+        document.querySelector('input[name="appendectomy"]').addEventListener('change', (e) => {
+            document.getElementById('appendectomyAgeDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
+        });
+
+        document.querySelector('input[name="hasAllergy"]').addEventListener('change', (e) => {
+            document.getElementById('foodAllergyDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            successMsg.classList.remove('show');
+            errorMsg.classList.remove('show');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Відправлення...';
 
             try {
-              const webhookUrl = 'https://script.google.com/macros/s/AKfycbwwfsARcdrfVuOC5ZjOGegv9APJmlUqaulKGeG0_6yIMSfaJBosiAvGX9sFtaIe_rY2/exec';
-              
-              const dataToSend = {
-                timestamp: new Date().toISOString(),
-                name: formData.name, age: formData.age, height: formData.height,
-                weight: formData.weight, chest: formData.chest, chestUnder: formData.chestUnder,
-                waist: formData.waist, hips: formData.hips, arm: formData.arm,
-                pregnant: formData.pregnant, surgery: formData.surgery, surgeryDesc: formData.surgeryDesc,
-                appendectomy: formData.appendectomy, appendectomyAge: formData.appendectomyAge,
-                gallbladder: formData.gallbladder, digestion: formData.digestion.join('; '),
-                skinCondition: formData.skinCondition, diagnoses: formData.diagnoses.join('; '),
-                hasAllergy: formData.hasAllergy, foodAllergy: formData.foodAllergy,
-                hasDiagnoses: formData.hasDiagnoses, otherDiagnoses: formData.otherDiagnoses,
-                morningEnergy: formData.morningEnergy, dayEnergy: formData.dayEnergy,
-                satisfaction: formData.satisfaction, stress: formData.stress,
-                sleepHours: formData.sleepHours, nightAwakenings: formData.nightAwakenings,
-                activity: formData.activity, foodHabits: formData.foodHabits.join('; '),
-                dietType: formData.dietType, trackers: formData.trackers,
-                priorities: Object.entries(formData.priorities).map(([key, val]) => `${key}: ${val}`).join('; '),
-              };
+                const formData = new FormData(form);
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    name: formData.get('name'),
+                    age: formData.get('age'),
+                    height: formData.get('height'),
+                    weight: formData.get('weight'),
+                    chest: formData.get('chest'),
+                    chestUnder: formData.get('chestUnder'),
+                    waist: formData.get('waist'),
+                    hips: formData.get('hips'),
+                    arm: formData.get('arm'),
+                    pregnant: formData.get('pregnant'),
+                    surgery: formData.get('surgery'),
+                    surgeryDesc: formData.get('surgeryDesc'),
+                    appendectomy: formData.get('appendectomy'),
+                    appendectomyAge: formData.get('appendectomyAge'),
+                    hasAllergy: formData.get('hasAllergy'),
+                    foodAllergy: formData.get('foodAllergy'),
+                };
 
-              const response = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataToSend),
-              });
+                const response = await fetch('https://script.google.com/macros/s/AKfycbwwfsARcdrfVuOC5ZjOGegv9APJmlUqaulKGeG0_6yIMSfaJBosiAvGX9sFtaIe_rY2/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
 
-              if (response.ok) {
-                setSuccess('✓ Дякуємо за участь у програмі HR Re:Start!\\n\\nВаша анкета успішно збережена.');
-                setTimeout(() => {
-                  setFormData({
-                    name: '', age: '', height: '', weight: '', chest: '', chestUnder: '',
-                    waist: '', hips: '', arm: '', pregnant: '', surgery: '', surgeryDesc: '',
-                    appendectomy: '', appendectomyAge: '', gallbladder: '', digestion: [],
-                    skinCondition: '', diagnoses: [], hasAllergy: '', foodAllergy: '', 
-                    hasDiagnoses: '', otherDiagnoses: '', morningEnergy: '5', dayEnergy: '5', 
-                    satisfaction: '5', stress: '5', sleepHours: '', nightAwakenings: '', 
-                    activity: '', foodHabits: [], dietType: '', trackers: '', 
-                    priorities: {'Вага': '', 'Сон': '', 'Зменшення набряків': '', 
-                                'Підвищення рівня енергії': '', 'Покращення стану шкіри': '', 
-                                'Покращення стану травлення': '', 'Психологічне розвантаження': ''},
-                    confirmed: false, understandMedical: false, agreeData: false
-                  });
-                  setSuccess('');
-                }, 4000);
-              } else {
-                setError('Помилка при збереженні.');
-              }
+                if (response.ok) {
+                    successMsg.textContent = '✓ Дякуємо за участь у програмі HR Re:Start!\n\nВаша анкета успішно збережена.';
+                    successMsg.classList.add('show');
+                    form.reset();
+                } else {
+                    throw new Error('Помилка при збереженні');
+                }
             } catch (err) {
-              setError('Помилка при відправці.');
+                errorMsg.textContent = 'Помилка при відправці даних. Спробуйте ще раз.';
+                errorMsg.classList.add('show');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Відправити анкету';
             }
-            setLoading(false);
-          };
-
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
-              <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">Анкета HR Re:Start</h1>
-                <p className="text-gray-600 mb-6">Заповнення займе близько 7 хвилин</p>
-
-                {error && (
-                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-800">{error}</p>
-                  </div>
-                )}
-
-                {success && (
-                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-green-800 whitespace-pre-wrap">{success}</p>
-                  </div>
-                )}
-
-                <div className="space-y-8">
-                  {/* І. Загальна інформація */}
-                  <section className="border-b pb-6">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">І. Загальна інформація</h2>
-                    
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">ПІБ</label>
-                      <input type="text" name="name" value={formData.name} onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Вік</label>
-                        <input type="number" name="age" value={formData.age} onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Зріст (см)</label>
-                        <input type="number" name="height" value={formData.height} onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Вага (кг)</label>
-                        <input type="number" name="weight" value={formData.weight} onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none" />
-                      </div>
-                    </div>
-
-                    <p className="text-sm font-medium text-gray-700 mb-3">Заміри (см)</p>
-                    <div className="grid grid-cols-1 gap-3 mb-4">
-                      {[
-                        { name: 'chest', label: 'Обхват грудей' },
-                        { name: 'chestUnder', label: 'Обхват під грудьми' },
-                        { name: 'waist', label: 'Обхват талії' },
-                        { name: 'hips', label: 'Обхват стегон' },
-                        { name: 'arm', label: 'Обхват руки' }
-                      ].map(field => (
-                        <input key={field.name} type="number" name={field.name} placeholder={field.label}
-                          value={formData[field.name]} onChange={handleInputChange}
-                          className="px-4 py-2 border border-gray-300 rounded-lg outline-none" />
-                      ))}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Чи є ви вагітною або годуєте грудьми?</label>
-                      <div className="space-y-2">
-                        {['Так', 'Ні', 'Не стосується'].map(option => (
-                          <label key={option} className="flex items-center cursor-pointer">
-                            <input type="radio" name="pregnant" value={option} checked={formData.pregnant === option}
-                              onChange={handleInputChange} className="mr-2" />
-                            <span className="text-sm">{option}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* V. Підтвердження */}
-                  <section>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">V. Підтвердження та згода</h2>
-                    <div className="space-y-3 mb-6">
-                      <label className="flex items-start cursor-pointer">
-                        <input type="checkbox" checked={formData.confirmed} 
-                          onChange={(e) => setFormData({...formData, confirmed: e.target.checked})}
-                          className="mr-3 mt-1" />
-                        <span className="text-sm">Надав(ла) достовірну інформацію</span>
-                      </label>
-                      <label className="flex items-start cursor-pointer">
-                        <input type="checkbox" checked={formData.understandMedical} 
-                          onChange={(e) => setFormData({...formData, understandMedical: e.target.checked})}
-                          className="mr-3 mt-1" />
-                        <span className="text-sm">Розумію, що програма не замінює медичне лікування</span>
-                      </label>
-                      <label className="flex items-start cursor-pointer">
-                        <input type="checkbox" checked={formData.agreeData} 
-                          onChange={(e) => setFormData({...formData, agreeData: e.target.checked})}
-                          className="mr-3 mt-1" />
-                        <span className="text-sm">Погоджуюсь на використання знеособлених даних</span>
-                      </label>
-                    </div>
-
-                    <button onClick={handleSubmit} disabled={loading}
-                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors cursor-pointer">
-                      {loading ? 'Відправлення...' : 'Відправити анкету'}
-                    </button>
-                  </section>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        ReactDOM.createRoot(document.getElementById('root')).render(<HRRestartForm />);
+        });
     </script>
 </body>
 </html>
