@@ -7,29 +7,31 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 40px; }
         h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
         .subtitle { color: #666; margin-bottom: 30px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; font-weight: 500; color: #333; margin-bottom: 8px; font-size: 14px; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        input[type="text"]:focus, input[type="number"]:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        input[type="text"], input[type="number"], input[type="email"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
         .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 10px; }
         input[type="checkbox"], input[type="radio"] { margin-right: 8px; cursor: pointer; }
-        .radio-group label, .checkbox-group label { display: flex; align-items: center; cursor: pointer; margin: 0; }
+        .radio-group label, .checkbox-group label { display: flex; align-items: center; cursor: pointer; margin: 0; font-weight: normal; }
         .section { border-bottom: 1px solid #eee; padding-bottom: 30px; margin-bottom: 30px; }
         .section:last-child { border-bottom: none; }
         h2 { color: #667eea; font-size: 18px; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .table-group { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .table-group th, .table-group td { padding: 10px; text-align: center; border: 1px solid #ddd; }
+        .table-group th { background: #f5f5f5; font-weight: 600; }
+        .table-group input[type="radio"] { margin: 0; }
         button { background: #667eea; color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; transition: all 0.3s; }
-        button:hover { background: #764ba2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        button:hover:not(:disabled) { background: #764ba2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
         .success { background: #d4edda; border: 1px solid #28a745; color: #155724; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none; }
         .success.show { display: block; }
         .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none; }
         .error.show { display: block; }
-        .spinner { display: none; }
-        .spinner.show { display: inline-block; }
     </style>
 </head>
 <body>
@@ -65,25 +67,28 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Обхват грудей (см)</label>
-                    <input type="number" name="chest">
-                </div>
-                <div class="form-group">
-                    <label>Обхват під грудьми (см)</label>
-                    <input type="number" name="chestUnder">
-                </div>
-                <div class="form-group">
-                    <label>Обхват талії (см)</label>
-                    <input type="number" name="waist">
-                </div>
-                <div class="form-group">
-                    <label>Обхват стегон (см)</label>
-                    <input type="number" name="hips">
-                </div>
-                <div class="form-group">
-                    <label>Обхват руки (см)</label>
-                    <input type="number" name="arm">
+                <p style="font-weight: 500; color: #333; margin-bottom: 15px;">Заміри (см)</p>
+                <div class="grid">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Обхват грудей</label>
+                        <input type="number" name="chest" placeholder="">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Обхват під грудьми</label>
+                        <input type="number" name="chestUnder">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Обхват талії</label>
+                        <input type="number" name="waist">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Обхват стегон</label>
+                        <input type="number" name="hips">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Обхват руки</label>
+                        <input type="number" name="arm">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -103,8 +108,8 @@
                 <div class="form-group">
                     <label>Хірургічні втручання за 6 місяців?</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="surgery" value="Так"> Так</label>
-                        <label><input type="radio" name="surgery" value="Ні"> Ні</label>
+                        <label><input type="radio" name="surgery" value="Так" onchange="toggleField('surgeryDescDiv')"> Так</label>
+                        <label><input type="radio" name="surgery" value="Ні" onchange="toggleField('surgeryDescDiv')"> Ні</label>
                     </div>
                 </div>
                 <div id="surgeryDescDiv" class="form-group" style="display:none;">
@@ -115,8 +120,8 @@
                 <div class="form-group">
                     <label>Апендектомія?</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="appendectomy" value="Так"> Так</label>
-                        <label><input type="radio" name="appendectomy" value="Ні"> Ні</label>
+                        <label><input type="radio" name="appendectomy" value="Так" onchange="toggleField('appendectomyAgeDiv')"> Так</label>
+                        <label><input type="radio" name="appendectomy" value="Ні" onchange="toggleField('appendectomyAgeDiv')"> Ні</label>
                     </div>
                 </div>
                 <div id="appendectomyAgeDiv" class="form-group" style="display:none;">
@@ -125,16 +130,216 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Стан жовчовивідної системи</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="gallbladder" value="Жовчний міхур видалений"> Жовчний міхур видалений</label>
+                        <label><input type="checkbox" name="gallbladder" value="Є камені (УЗД)"> Є камені (УЗД)</label>
+                        <label><input type="checkbox" name="gallbladder" value="Були жовчні коліки"> Були жовчні коліки</label>
+                        <label><input type="checkbox" name="gallbladder" value="Скарг немає"> Скарг немає</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Травлення та ШКТ</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="digestion" value="Печія"> Печія</label>
+                        <label><input type="checkbox" name="digestion" value="Дискомфорт під ребром"> Дискомфорт під ребром</label>
+                        <label><input type="checkbox" name="digestion" value="Дискомфорт в животі"> Дискомфорт в животі</label>
+                        <label><input type="checkbox" name="digestion" value="Здуття"> Здуття</label>
+                        <label><input type="checkbox" name="digestion" value="Нерегулярний стілець"> Нерегулярний стілець</label>
+                        <label><input type="checkbox" name="digestion" value="Скарг немає"> Скарг немає</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Стан шкіри</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="skinCondition" value="Тьмяна/суха"> Тьмяна/суха</label>
+                        <label><input type="checkbox" name="skinCondition" value="Жирна/комбінована"> Жирна/комбінована</label>
+                        <label><input type="checkbox" name="skinCondition" value="Висипи на обличчі"> Висипи на обличчі</label>
+                        <label><input type="checkbox" name="skinCondition" value="Висипи на тілі"> Висипи на тілі</label>
+                        <label><input type="checkbox" name="skinCondition" value="Задовільний стан"> Задовільний стан</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Наявні діагнози</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="diagnoses" value="Порушення щитоподібної залози"> Порушення щитоподібної залози</label>
+                        <label><input type="checkbox" name="diagnoses" value="РХП в анамнезі"> РХП в анамнезі</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label>Харчова алергія/непереносимість?</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="hasAllergy" value="Так"> Так</label>
-                        <label><input type="radio" name="hasAllergy" value="Ні"> Ні</label>
+                        <label><input type="radio" name="hasAllergy" value="Так" onchange="toggleField('foodAllergyDiv')"> Так</label>
+                        <label><input type="radio" name="hasAllergy" value="Ні" onchange="toggleField('foodAllergyDiv')"> Ні</label>
                     </div>
                 </div>
                 <div id="foodAllergyDiv" class="form-group" style="display:none;">
                     <label>Опишіть:</label>
                     <input type="text" name="foodAllergy">
                 </div>
+            </div>
+
+            <!-- ІІІ. Спосіб життя -->
+            <div class="section">
+                <h2>ІІІ. Спосіб життя та рівень енергії</h2>
+
+                <p style="font-weight: 500; color: #333; margin-bottom: 15px;">Рівень енергії та задоволеності (0–10)</p>
+                <div class="grid">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Рівень енергії вранці</label>
+                        <input type="range" name="morningEnergy" min="0" max="10" value="5" style="width: 100%; padding: 8px 0;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Рівень енергії протягом дня</label>
+                        <input type="range" name="dayEnergy" min="0" max="10" value="5" style="width: 100%; padding: 8px 0;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Задоволеність результатами дня</label>
+                        <input type="range" name="satisfaction" min="0" max="10" value="5" style="width: 100%; padding: 8px 0;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Рівень напруження за 2 тижні</label>
+                        <input type="range" name="stress" min="0" max="10" value="5" style="width: 100%; padding: 8px 0;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Середня тривалість сну (годин)</label>
+                    <input type="number" name="sleepHours" step="0.5">
+                </div>
+
+                <div class="form-group">
+                    <label>Нічні пробудження</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="nightAwakenings" value="Немає"> Немає</label>
+                        <label><input type="radio" name="nightAwakenings" value="1–2"> 1–2</label>
+                        <label><input type="radio" name="nightAwakenings" value="3+"> 3+</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Рівень фізичної активності</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="activity" value="Сидячий"> Сидячий</label>
+                        <label><input type="radio" name="activity" value="Помірний"> Помірний</label>
+                        <label><input type="radio" name="activity" value="Активний"> Активний</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Харчові звички</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="foodHabits" value="Тяга до солодкого"> Тяга до солодкого</label>
+                        <label><input type="checkbox" name="foodHabits" value="Кава 3+ на день"> Кава 3+ на день</label>
+                        <label><input type="checkbox" name="foodHabits" value="Фастфуд часто"> Фастфуд часто</label>
+                        <label><input type="checkbox" name="foodHabits" value="Алкоголь 2+ разів"> Алкоголь 2+ разів</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Чи використовуєте трекери?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="trackers" value="Так"> Так</label>
+                        <label><input type="radio" name="trackers" value="Ні"> Ні</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ІV. Мета та очікування -->
+            <div class="section">
+                <h2>ІV. Мета та очікування</h2>
+                <p style="margin-bottom: 15px; color: #666;">Проранжуйте ваші пріоритети як результат цих 6 тижнів (1 — найважливіше, 7 — менш важливе)</p>
+                
+                <table class="table-group">
+                    <thead>
+                        <tr>
+                            <th>Пріоритет</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Вага</td>
+                            <td><input type="radio" name="priorities_weight" value="1"></td>
+                            <td><input type="radio" name="priorities_weight" value="2"></td>
+                            <td><input type="radio" name="priorities_weight" value="3"></td>
+                            <td><input type="radio" name="priorities_weight" value="4"></td>
+                            <td><input type="radio" name="priorities_weight" value="5"></td>
+                            <td><input type="radio" name="priorities_weight" value="6"></td>
+                            <td><input type="radio" name="priorities_weight" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Сон</td>
+                            <td><input type="radio" name="priorities_sleep" value="1"></td>
+                            <td><input type="radio" name="priorities_sleep" value="2"></td>
+                            <td><input type="radio" name="priorities_sleep" value="3"></td>
+                            <td><input type="radio" name="priorities_sleep" value="4"></td>
+                            <td><input type="radio" name="priorities_sleep" value="5"></td>
+                            <td><input type="radio" name="priorities_sleep" value="6"></td>
+                            <td><input type="radio" name="priorities_sleep" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Зменшення набряків</td>
+                            <td><input type="radio" name="priorities_swelling" value="1"></td>
+                            <td><input type="radio" name="priorities_swelling" value="2"></td>
+                            <td><input type="radio" name="priorities_swelling" value="3"></td>
+                            <td><input type="radio" name="priorities_swelling" value="4"></td>
+                            <td><input type="radio" name="priorities_swelling" value="5"></td>
+                            <td><input type="radio" name="priorities_swelling" value="6"></td>
+                            <td><input type="radio" name="priorities_swelling" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Підвищення рівня енергії</td>
+                            <td><input type="radio" name="priorities_energy" value="1"></td>
+                            <td><input type="radio" name="priorities_energy" value="2"></td>
+                            <td><input type="radio" name="priorities_energy" value="3"></td>
+                            <td><input type="radio" name="priorities_energy" value="4"></td>
+                            <td><input type="radio" name="priorities_energy" value="5"></td>
+                            <td><input type="radio" name="priorities_energy" value="6"></td>
+                            <td><input type="radio" name="priorities_energy" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Покращення стану шкіри</td>
+                            <td><input type="radio" name="priorities_skin" value="1"></td>
+                            <td><input type="radio" name="priorities_skin" value="2"></td>
+                            <td><input type="radio" name="priorities_skin" value="3"></td>
+                            <td><input type="radio" name="priorities_skin" value="4"></td>
+                            <td><input type="radio" name="priorities_skin" value="5"></td>
+                            <td><input type="radio" name="priorities_skin" value="6"></td>
+                            <td><input type="radio" name="priorities_skin" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Покращення стану травлення</td>
+                            <td><input type="radio" name="priorities_digestion" value="1"></td>
+                            <td><input type="radio" name="priorities_digestion" value="2"></td>
+                            <td><input type="radio" name="priorities_digestion" value="3"></td>
+                            <td><input type="radio" name="priorities_digestion" value="4"></td>
+                            <td><input type="radio" name="priorities_digestion" value="5"></td>
+                            <td><input type="radio" name="priorities_digestion" value="6"></td>
+                            <td><input type="radio" name="priorities_digestion" value="7"></td>
+                        </tr>
+                        <tr>
+                            <td>Психологічне розвантаження</td>
+                            <td><input type="radio" name="priorities_stress" value="1"></td>
+                            <td><input type="radio" name="priorities_stress" value="2"></td>
+                            <td><input type="radio" name="priorities_stress" value="3"></td>
+                            <td><input type="radio" name="priorities_stress" value="4"></td>
+                            <td><input type="radio" name="priorities_stress" value="5"></td>
+                            <td><input type="radio" name="priorities_stress" value="6"></td>
+                            <td><input type="radio" name="priorities_stress" value="7"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- V. Підтвердження -->
@@ -158,18 +363,16 @@
         const successMsg = document.getElementById('success');
         const errorMsg = document.getElementById('error');
 
-        // Show/hide conditional fields
-        document.querySelector('input[name="surgery"]').addEventListener('change', (e) => {
-            document.getElementById('surgeryDescDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
-        });
-
-        document.querySelector('input[name="appendectomy"]').addEventListener('change', (e) => {
-            document.getElementById('appendectomyAgeDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
-        });
-
-        document.querySelector('input[name="hasAllergy"]').addEventListener('change', (e) => {
-            document.getElementById('foodAllergyDiv').style.display = e.target.value === 'Так' ? 'block' : 'none';
-        });
+        function toggleField(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            
+            const fieldName = fieldId.replace('Div', '');
+            const radioInputs = document.querySelectorAll(`input[name="${fieldName}"]`);
+            const isYes = Array.from(radioInputs).some(input => input.checked && input.value === 'Так');
+            
+            field.style.display = isYes ? 'block' : 'none';
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -181,33 +384,17 @@
 
             try {
                 const formData = new FormData(form);
-                const data = {
-                    timestamp: new Date().toISOString(),
-                    name: formData.get('name'),
-                    age: formData.get('age'),
-                    height: formData.get('height'),
-                    weight: formData.get('weight'),
-                    chest: formData.get('chest'),
-                    chestUnder: formData.get('chestUnder'),
-                    waist: formData.get('waist'),
-                    hips: formData.get('hips'),
-                    arm: formData.get('arm'),
-                    pregnant: formData.get('pregnant'),
-                    surgery: formData.get('surgery'),
-                    surgeryDesc: formData.get('surgeryDesc'),
-                    appendectomy: formData.get('appendectomy'),
-                    appendectomyAge: formData.get('appendectomyAge'),
-                    hasAllergy: formData.get('hasAllergy'),
-                    foodAllergy: formData.get('foodAllergy'),
-                };
-
-                const response = await fetch('https://script.google.com/macros/s/AKfycbwwfsARcdrfVuOC5ZjOGegv9APJmlUqaulKGeG0_6yIMSfaJBosiAvGX9sFtaIe_rY2/exec', {
+                
+                const response = await fetch('https://formspree.io/f/xgovworj', {
                     method: 'POST',
-                    body: JSON.stringify(data)
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
 
                 if (response.ok) {
-                    successMsg.textContent = '✓ Дякуємо за участь у програмі HR Re:Start!\n\nВаша анкета успішно збережена.';
+                    successMsg.innerHTML = '✓ Дякуємо за участь у програмі HR Re:Start!<br><br>Ваша анкета успішно збережена.';
                     successMsg.classList.add('show');
                     form.reset();
                 } else {
